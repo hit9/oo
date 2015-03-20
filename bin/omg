@@ -1,0 +1,87 @@
+#!/bin/bash
+
+VERSION='0.0.1'
+
+# 
+# Settings
+#
+# MIRROR='https://github.com/golang/go/archive/'  # endswith slash
+MIRROR='http://127.0.0.1:8000/'  # endswith slash
+TAREXT='.tar.gz'  # startswith dot
+BUILDCMD=./make.bash
+
+#
+# Global Vars
+#
+ROOTDIR=$(cd $(dirname $0)/.. && pwd)
+VERSIONSDIR=${ROOTDIR}/versions
+GOROOT=${ROOTDIR}/go
+
+#
+# Docs
+#
+
+show_help() {
+    cat <<-EOF
+Usage: omg [COMMAND]
+
+Commands:
+  omg                         Output versions installed
+  omg <version>               Use go <version>
+  omg use <version>           Use go <version>
+  omg get <version>           Get go <version>
+  omg rm <version>            Remove the given verion
+
+Options:
+  -v, --version               Output omg's version
+  -h, --help                  Output this help message
+EOF
+    exit 0
+}
+
+show_version() {
+    echo ${VERSION}
+    exit 0
+}
+
+abort() {
+    echo $1 && exit 1
+}
+
+get() {
+    version=$1
+    tarball_name=go${version}${TAREXT}
+    tarball_path=${ROOTDIR}/${tarball_name}
+    tarball_url=${MIRROR}/${tarball_name}
+    target_dir=${VERSIONSDIR}/${version}
+    target_bin=${VERSIONSDIR}/${version}/bin
+    # test curl command
+    command -v curl > /dev/null || abort 'curl is required'
+    # test directory versions/${version}
+    test -d ${target_dir} || mkdir -p ${target_dir}
+    # download and extract
+    curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
+
+    if [ ${?} != 0 ]; then
+        rm -rf ${target_dir} && abort 'bad version'
+    fi
+
+    printf 'build go@%s..' ${version}
+    # cd ${target_dir}/src && ${BUILDCMD} &> /dev/null || abort 'build or test failed'
+    printf '\rsuccess => ' && ${target_bin}/go version
+
+    # create soft link
+    test -d ${GOROOT} && rm -r ${GOROOT}
+    ln -fs ${target_dir} ${GOROOT}
+}
+
+
+if test $# -eq 0; then
+    show_help
+else 
+    case $1 in 
+        -v|--version) show_version ;;
+        -h|--help|help) show_help ;;
+        *) get $1 ;;
+    esac
+fi
