@@ -27,7 +27,7 @@ Commands:
   oo <version>               Use go <version>
   oo use <version>           Use go <version>
   oo get <version>           Get go <version>
-  oo rm <version>            Remove the given verion
+  oo rm <version>            Remove the given version
 
 Options:
   -v, --version               Output oo's version
