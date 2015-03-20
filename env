@@ -1,5 +1,5 @@
 #!/bin/bash
-ROOTDIR=$(cd $(dirname $0) && pwd)
-export PATH=${PATH}:${ROOTDIR}/bin
-export GOROOT=${ROOTDIR}/go
+OOROOTDIR=$(cd $(dirname $0) && pwd)
+export PATH=${PATH}:${OOROOTDIR}/bin
+export GOROOT=${OOROOTDIR}/go
 export PATH=${PATH}:${GOROOT}/bin
