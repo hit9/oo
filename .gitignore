@@ -1,3 +1,4 @@
 .*.sw[opn]
 versions
 go
+current_version

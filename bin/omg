@@ -5,8 +5,7 @@ VERSION='0.0.1'
 # 
 # Settings
 #
-# MIRROR='https://github.com/golang/go/archive/'  # endswith slash
-MIRROR='http://127.0.0.1:8000/'  # endswith slash
+MIRROR='https://github.com/golang/go/archive/'  # endswith slash
 TAREXT='.tar.gz'  # startswith dot
 BUILDCMD=./make.bash
 
@@ -15,7 +14,8 @@ BUILDCMD=./make.bash
 #
 ROOTDIR=$(cd $(dirname $0)/.. && pwd)
 VERSIONSDIR=${ROOTDIR}/versions
-GOROOT=${ROOTDIR}/go
+GOROOTDIR=${ROOTDIR}/go
+CURRENTVERSIONFILE=${ROOTDIR}/current_version
 
 #
 # Docs
@@ -26,7 +26,8 @@ show_help() {
 Usage: omg [COMMAND]
 
 Commands:
-  omg                         Output versions installed
+  omg                         Output current go version
+  omg ls                      Output versions installed
   omg <version>               Use go <version>
   omg use <version>           Use go <version>
   omg get <version>           Get go <version>
@@ -48,13 +49,76 @@ abort() {
     echo $1 && exit 1
 }
 
+#
+# Show current version
+#
+current() {
+    test -f ${CURRENTVERSIONFILE} || abort 'nothing'
+    cat ${CURRENTVERSIONFILE}
+}
+
+#
+# List all versions installed
+#
+list() {
+    for file in ${VERSIONSDIR}/*
+    do
+        if [ -d ${file} ]; then
+            basename ${file}
+        fi
+    done
+}
+
+#
+# Use a version
+#
+use() {
+    test -z $1 && show_help
+    target_dir=${VERSIONSDIR}/$1
+    test -d ${target_dir} || abort 'not installed'
+    # create soft link
+    test -f ${GOROOTDIR} && rm ${GOROOTDIR}
+    test -d ${GOROOTDIR} && rm -r ${GOROOTDIR}
+    ln -fs ${target_dir} ${GOROOTDIR}
+    printf $1 > ${CURRENTVERSIONFILE}
+    printf '=> ' && ${GOROOTDIR}/bin/go version
+}
+
+#
+# Deuse a version
+#
+deuse() {
+    if [ $(cat ${CURRENTVERSIONFILE}) = $1 ]; then
+        rm ${CURRENTVERSIONFILE}
+        rm ${GOROOTDIR}
+    fi
+}
+
+#
+# Remove a version
+#
+remove() {
+    test -z $1 && show_help
+    target_dir=${VERSIONSDIR}/$1
+    test -d ${target_dir} || abort 'not installed'
+    rm -r ${target_dir}
+    deuse $1
+    printf 'go@%s removed\n' $1
+}
+
+#
+# Get a version
+#
 get() {
+    test -z $1 && show_help
     version=$1
     tarball_name=go${version}${TAREXT}
     tarball_path=${ROOTDIR}/${tarball_name}
     tarball_url=${MIRROR}/${tarball_name}
     target_dir=${VERSIONSDIR}/${version}
     target_bin=${VERSIONSDIR}/${version}/bin
+    # test if already installed
+    test -d ${target_dir} && abort 'already installed'
     # test curl command
     command -v curl > /dev/null || abort 'curl is required'
     # test directory versions/${version}
@@ -66,22 +130,25 @@ get() {
         rm -rf ${target_dir} && abort 'bad version'
     fi
 
-    printf 'build go@%s..' ${version}
-    # cd ${target_dir}/src && ${BUILDCMD} &> /dev/null || abort 'build or test failed'
-    printf '\rsuccess => ' && ${target_bin}/go version
+    printf 'build go@%s..\n' ${version}
+    cd ${target_dir}/src && ${BUILDCMD} &> /dev/null || abort 'build or test failed'
 
-    # create soft link
-    test -d ${GOROOT} && rm -r ${GOROOT}
-    ln -fs ${target_dir} ${GOROOT}
+    use ${version}
 }
 
-
+#
+# Main
+#
 if test $# -eq 0; then
-    show_help
+    current
 else 
     case $1 in 
         -v|--version) show_version ;;
         -h|--help|help) show_help ;;
-        *) get $1 ;;
+        ls) list ;;
+        get) get $2 ;;
+        rm) remove $2 ;;
+        use) use $2 ;;
+        *) use $1 ;;
     esac
 fi
