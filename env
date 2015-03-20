@@ -1,2 +1,5 @@
-DIRNAME=$(cd $(dirname $0) && pwd)
-export PATH=${PATH}:${DIRNAME}/bin:${DIRNAME}/go
+#!/bin/bash
+ROOTDIR=$(cd $(dirname $0) && pwd)
+export PATH=${PATH}:${ROOTDIR}/bin
+export GOROOT=${ROOTDIR}/go
+export PATH=${PATH}:${GOROOT}/bin
