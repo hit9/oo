@@ -1,7 +1,5 @@
-OO
---
-
-Go Version Manager.
+OO - Go Version Manager
+------------------------
 
 ![](screen.gif)
 
