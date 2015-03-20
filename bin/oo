@@ -18,23 +18,22 @@ GOROOTDIR=${ROOTDIR}/go
 CURRENTVERSIONFILE=${ROOTDIR}/current_version
 
 #
-# Docs
+# Help
 #
-
 show_help() {
     cat <<-EOF
-Usage: omg [COMMAND]
+Usage: oo [COMMAND]
 
 Commands:
-  omg                         Output current go version
-  omg ls                      Output versions installed
-  omg <version>               Use go <version>
-  omg use <version>           Use go <version>
-  omg get <version>           Get go <version>
-  omg rm <version>            Remove the given verion
+  oo                         Output current go version
+  oo ls                      Output versions installed
+  oo <version>               Use go <version>
+  oo use <version>           Use go <version>
+  oo get <version>           Get go <version>
+  oo rm <version>            Remove the given verion
 
 Options:
-  -v, --version               Output omg's version
+  -v, --version               Output oo's version
   -h, --help                  Output this help message
 EOF
     exit 0
