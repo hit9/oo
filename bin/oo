@@ -105,10 +105,10 @@ get() {
     version=$1
     tarball_url=$(printf ${MIRROR_PATTERN} ${version})
     target_dir=${VERSIONS_DIR}/${version}
-    echo ${tarball_url}
     test -d ${target_dir} && abort 'already installed'
     command -v curl > /dev/null || abort 'curl is required'
     test -d ${target_dir} || mkdir -p ${target_dir}
+    printf 'get %s..\n' ${tarball_url}
     curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
 
     if [ ${?} != 0 ]; then
