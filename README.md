@@ -1,6 +1,8 @@
 OO - Go Version Manager
 ------------------------
 
+Latest version: 0.0.2
+
 ![](screen.gif)
 
 Install
