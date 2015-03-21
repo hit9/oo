@@ -31,8 +31,8 @@ Commands:
   oo rm <version>            Remove the given version
 
 Options:
-  -v, --version               Output oo's version
-  -h, --help                  Output this help message
+  -v, --version              Output oo's version
+  -h, --help                 Output this help message
 EOF
     exit 0
 }
