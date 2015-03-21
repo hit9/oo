@@ -50,7 +50,7 @@ abort() {
 # Show current version
 #
 current() {
-    test -f ${GOROOT_DIR}/VERSION || abort 'none'
+    test -f ${GOROOT_DIR}/VERSION || abort 'go?'
     printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
 }
 

@@ -32,6 +32,16 @@ Options:
   -h, --help                  Output this help message
 ```
 
+Custom Mirror
+-------------
+
+```bash
+$ export OO_MIRROR_PATTERN='https://storage.googleapis.com/golang/go%s.src.tar.gz'
+$ oo get 1.4
+get https://storage.googleapis.com/golang/go1.4.src.tar.gz..
+##########                                                                14.4%
+```
+
 License
 --------
 
