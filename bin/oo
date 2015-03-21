@@ -5,16 +5,15 @@ VERSION='0.0.1'
 # 
 # Settings
 #
-MIRROR_PATTERN='https://codeload.github.com/golang/go/tar.gz/go%s'
-BUILDCMD=./make.bash
+MIRROR_PATTERN=${OO_MIRROR_PATTERN-https://codeload.github.com/golang/go/tar.gz/go%s}
+BUILD_CMD=./make.bash
 
 #
 # Global Vars
 #
-ROOTDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-VERSIONSDIR=${ROOTDIR}/versions
-GOROOTDIR=${ROOTDIR}/go
-CURRENTVERSIONFILE=${ROOTDIR}/current_version
+ROOT_DIR=$(cd -P -- "$(dirname -- "$0")/.." && pwd -P)
+VERSIONS_DIR=${ROOT_DIR}/versions
+GOROOT_DIR=${ROOT_DIR}/go
 
 #
 # Help
@@ -51,15 +50,15 @@ abort() {
 # Show current version
 #
 current() {
-    test -f ${CURRENTVERSIONFILE} || abort 'nothing'
-    printf '%s\n' $(cat ${CURRENTVERSIONFILE})
+    test -f ${GOROOT_DIR}/VERSION || abort 'none'
+    printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
 }
 
 #
 # List all versions installed
 #
 list() {
-    for file in ${VERSIONSDIR}/*
+    for file in ${VERSIONS_DIR}/*
     do
         if [ -d ${file} ]; then
             basename ${file}
@@ -72,24 +71,13 @@ list() {
 #
 use() {
     test -z $1 && show_help
-    target_dir=${VERSIONSDIR}/$1
+    target_dir=${VERSIONS_DIR}/$1
     test -d ${target_dir} || abort 'not installed'
     # create soft link
-    test -f ${GOROOTDIR} && rm ${GOROOTDIR}
-    test -d ${GOROOTDIR} && rm -r ${GOROOTDIR}
-    ln -fs ${target_dir} ${GOROOTDIR}
-    printf $1 > ${CURRENTVERSIONFILE}
-    printf '=> ' && ${GOROOTDIR}/bin/go version
-}
-
-#
-# Deuse a version
-#
-deuse() {
-    if [ -f ${CURRENTVERSIONFILE} ] && [ $(cat ${CURRENTVERSIONFILE}) = $1 ]; then
-        rm ${CURRENTVERSIONFILE}
-        rm ${GOROOTDIR}
-    fi
+    test -f ${GOROOT_DIR} && rm ${GOROOT_DIR}
+    test -d ${GOROOT_DIR} && rm -r ${GOROOT_DIR}
+    ln -fs ${target_dir} ${GOROOT_DIR}
+    printf '=> %s\n' $(cat ${GOROOT_DIR}/VERSION)
 }
 
 #
@@ -97,10 +85,15 @@ deuse() {
 #
 remove() {
     test -z $1 && show_help
-    target_dir=${VERSIONSDIR}/$1
+    target_dir=${VERSIONS_DIR}/$1
     test -d ${target_dir} || abort 'not installed'
+
+    if [ -d ${GOROOT_DIR} ] && \
+        [ $(readlink ${GOROOT_DIR}) = ${target_dir} ]; then
+        rm ${GOROOT_DIR} && printf 'go@%s deused\n' $1
+    fi
+
     rm -r ${target_dir}
-    deuse $1
     printf 'go@%s removed\n' $1
 }
 
@@ -111,8 +104,7 @@ get() {
     test -z $1 && show_help
     version=$1
     tarball_url=$(printf ${MIRROR_PATTERN} ${version})
-    target_dir=${VERSIONSDIR}/${version}
-    target_bin=${VERSIONSDIR}/${version}/bin
+    target_dir=${VERSIONS_DIR}/${version}
     echo ${tarball_url}
     test -d ${target_dir} && abort 'already installed'
     command -v curl > /dev/null || abort 'curl is required'
@@ -123,8 +115,8 @@ get() {
         rm -rf ${target_dir} && abort 'bad version'
     fi
 
-    printf 'build go@%s..\n' ${version}
-    cd ${target_dir}/src && ${BUILDCMD} &> /dev/null || abort 'build or test failed'
+    printf 'build %s..\n' $(cat ${GOROOT_DIR}/VERSION)
+    cd ${target_dir}/src && ${BUILD_CMD} &> /dev/null || abort 'build failed'
 
     use ${version}
 }
