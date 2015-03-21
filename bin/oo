@@ -2,7 +2,7 @@
 
 VERSION='0.0.1'
 
-# 
+#
 # Settings
 #
 MIRROR_PATTERN=${OO_MIRROR_PATTERN-https://codeload.github.com/golang/go/tar.gz/go%s}
@@ -100,6 +100,18 @@ remove() {
 #
 # Get a version
 #
+handle_get_sigint() {
+    printf '\ncanceled, clean up..\n' $1
+    remove $1
+    exit 1
+}
+
+handle_get_sigtstp() {
+    printf '\nstopped, clean up..\n' $1
+    remove $1
+    exit 1
+}
+
 get() {
     test -z $1 && show_help
     version=$1
@@ -108,6 +120,8 @@ get() {
     test -d ${target_dir} && abort 'already installed'
     command -v curl > /dev/null || abort 'curl is required'
     test -d ${target_dir} || mkdir -p ${target_dir}
+    trap 'handle_get_sigint ${version}' INT
+    trap 'handle_get_sigtstp ${version}' SIGTSTP
     printf 'get %s..\n' ${tarball_url}
     curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
 
@@ -115,7 +129,7 @@ get() {
         rm -rf ${target_dir} && abort 'bad version'
     fi
 
-    printf 'build %s..\n' $(cat ${GOROOT_DIR}/VERSION)
+    printf 'build %s..\n' $(cat ${target_dir}/VERSION)
     cd ${target_dir}/src && ${BUILD_CMD} &> /dev/null || abort 'build failed'
 
     use ${version}
@@ -126,8 +140,8 @@ get() {
 #
 if test $# -eq 0; then
     current
-else 
-    case $1 in 
+else
+    case $1 in
         -v|--version) show_version ;;
         -h|--help|help) show_help ;;
         ls) list ;;
