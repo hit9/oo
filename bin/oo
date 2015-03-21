@@ -12,7 +12,7 @@ BUILDCMD=./make.bash
 #
 # Global Vars
 #
-ROOTDIR=$(cd $(dirname $0)/.. && pwd)
+ROOTDIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 VERSIONSDIR=${ROOTDIR}/versions
 GOROOTDIR=${ROOTDIR}/go
 CURRENTVERSIONFILE=${ROOTDIR}/current_version
