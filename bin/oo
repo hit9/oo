@@ -5,8 +5,7 @@ VERSION='0.0.1'
 # 
 # Settings
 #
-MIRROR='https://github.com/golang/go/archive/'  # endswith slash
-TAREXT='.tar.gz'  # startswith dot
+MIRROR_PATTERN='https://codeload.github.com/golang/go/tar.gz/go%s'
 BUILDCMD=./make.bash
 
 #
@@ -53,7 +52,7 @@ abort() {
 #
 current() {
     test -f ${CURRENTVERSIONFILE} || abort 'nothing'
-    cat ${CURRENTVERSIONFILE}
+    printf '%s\n' $(cat ${CURRENTVERSIONFILE})
 }
 
 #
@@ -87,7 +86,7 @@ use() {
 # Deuse a version
 #
 deuse() {
-    if [ $(cat ${CURRENTVERSIONFILE}) = $1 ]; then
+    if [ -f ${CURRENTVERSIONFILE} ] && [ $(cat ${CURRENTVERSIONFILE}) = $1 ]; then
         rm ${CURRENTVERSIONFILE}
         rm ${GOROOTDIR}
     fi
@@ -111,18 +110,13 @@ remove() {
 get() {
     test -z $1 && show_help
     version=$1
-    tarball_name=go${version}${TAREXT}
-    tarball_path=${ROOTDIR}/${tarball_name}
-    tarball_url=${MIRROR}/${tarball_name}
+    tarball_url=$(printf ${MIRROR_PATTERN} ${version})
     target_dir=${VERSIONSDIR}/${version}
     target_bin=${VERSIONSDIR}/${version}/bin
-    # test if already installed
+    echo ${tarball_url}
     test -d ${target_dir} && abort 'already installed'
-    # test curl command
     command -v curl > /dev/null || abort 'curl is required'
-    # test directory versions/${version}
     test -d ${target_dir} || mkdir -p ${target_dir}
-    # download and extract
     curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
 
     if [ ${?} != 0 ]; then
