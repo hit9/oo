@@ -11,7 +11,7 @@ BUILD_CMD=./make.bash
 #
 # Global Vars
 #
-ROOT_DIR=$(cd -P -- "$(dirname -- "$0")/.." && pwd -P)
+ROOT_DIR=$(cd -P -- "$(dirname -- "${BASH_SOURCE:-$_}")/.." && pwd -P)
 VERSIONS_DIR=${ROOT_DIR}/versions
 GOROOT_DIR=${ROOT_DIR}/go
 
