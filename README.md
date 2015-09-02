@@ -26,12 +26,10 @@ $ oo get 1.4
 
 Use go1.4 as current `go` (or just `oo 1.4`):
 
-
 ```bash
 $ oo use 1.4
 => go1.4
 ```
-
 
 Run go from 1.3 temporary, e.g. to build package:
 
@@ -49,6 +47,8 @@ Build (or rebuild) go by version:
 
 ```bash
 $ oo build 1.4
+build go1.4..
+build successfully
 ```
 
 Get current go binary path:
@@ -56,6 +56,13 @@ Get current go binary path:
 ```bash
 $ oo bin
 /Users/hit9/github/oo/go/bin/go
+```
+
+Remove a version:
+
+```bash
+$ oo rm 1.5rc1                                                                                                                                                                          1 ↵ (go1.4 node@v2.0.0) ~/github/oo/versions/1.5/src
+go@1.5rc1 removed
 ```
 
 Usage
