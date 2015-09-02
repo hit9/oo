@@ -33,6 +33,7 @@ Commands:
   oo use <version>           Use go <version>
   oo get <version>           Get go <version>
   oo rm <version>            Remove the given version
+  oo as <version>            Run go from oo on a specific version
   oo dir [<version>]         Show go directory by version
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
@@ -226,6 +227,19 @@ bin() {
     fi
 }
 
+
+#
+# Run as go version
+#
+as() {
+    test -z $1 && show_help
+    version=$1
+    target_dir=${VERSIONS_DIR}/${version}
+    test ! -d $target_dir && abort 'not installed'
+    target_bin=${target_dir}/bin/go
+    exec "${target_bin}" "${@:2}"
+}
+
 #
 # Main
 #
@@ -238,6 +252,7 @@ else
         ls) list ;;
         get) get $2 ;;
         rm) remove $2 ;;
+        as) as ${@:2};;
         use) use $2 ;;
         dir) dir $2;;
         bin) bin $2;;
