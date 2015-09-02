@@ -28,6 +28,7 @@ Commands:
   oo use <version>           Use go <version>
   oo get <version>           Get go <version>
   oo rm <version>            Remove the given version
+  oo as <version>            Run go from oo on a specific version
   oo dir [<version>]         Show go directory by version
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
@@ -43,7 +44,7 @@ Environment Variables:
   OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version,
                              default: the latest installed version
 
-Version: 0.0.3
+Version: 0.0.4
 ```
 
 Custom Mirror
