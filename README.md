@@ -15,6 +15,49 @@ Install
    source "/path/to/oo/env"
    ```
 
+Examples
+---------
+
+Get go1.4 installed:
+
+```bash
+$ oo get 1.4
+```
+
+Use go1.4 as current `go`:
+
+```bash
+$ oo use 1.4
+=> go1.4
+```
+
+Or just `oo 1.4` to use a go1.4.
+
+Run go from 1.3 temporary, e.g. to build package:
+
+```bash
+$ oo as 1.3 build
+```
+
+List all installed go versions
+
+```bash
+$ oo ls
+```
+
+Build (or rebuild) go by version:
+
+```bash
+$ oo build 1.4
+```
+
+Get current go binary path:
+
+```bash
+$ oo bin
+/Users/hit9/github/oo/go/bin/go
+```
+
 Usage
 -----
 
