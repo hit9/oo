@@ -24,14 +24,14 @@ Get go1.4 installed:
 $ oo get 1.4
 ```
 
-Use go1.4 as current `go`:
+Use go1.4 as current `go` (or just `oo 1.4`):
+
 
 ```bash
 $ oo use 1.4
 => go1.4
 ```
 
-Or just `oo 1.4` to use a go1.4.
 
 Run go from 1.3 temporary, e.g. to build package:
 
