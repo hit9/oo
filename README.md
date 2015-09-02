@@ -31,10 +31,13 @@ $ oo use 1.4
 => go1.4
 ```
 
-Run go from 1.3 temporary, e.g. to build package:
+Run go from 1.3 temporary:
 
 ```bash
-$ oo as 1.3 build
+$ oo as 1.3 version
+go version go1.3 darwin/amd64
+$ oo as 1.3 run helloworld.go
+Hello world!
 ```
 
 List all installed go versions
