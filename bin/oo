@@ -1,12 +1,16 @@
 #!/bin/bash
 
-VERSION='0.0.2'
+VERSION='0.0.3'
 
 #
 # Settings
 #
 MIRROR_PATTERN=${OO_MIRROR_PATTERN-https://codeload.github.com/golang/go/tar.gz/go%s}
-BUILD_CMD=./make.bash
+BUILD_CMD=${OO_BUILD_CMD-./make.bash}
+
+if [ ! -z "${OO_BOOTSTRAP_VERSION}" ]; then
+    BOOTSTRAP_VERSION=${OO_BOOTSTRAP_VERSION}
+fi
 
 #
 # Global Vars
@@ -29,13 +33,28 @@ Commands:
   oo use <version>           Use go <version>
   oo get <version>           Get go <version>
   oo rm <version>            Remove the given version
+  oo dir [<version>]         Show go directory by version
+  oo bin [<version>]         Show go binary path by version
+  oo build [<version>]       Build go by version
 
 Options:
   -v, --version              Output oo's version
   -h, --help                 Output this help message
+
+Environment Variables:
+  OO_MIRROR_PATTERN          Mirror url pattern to download go source tarball
+                             default: https://codeload.github.com/golang/go/tar.gz/go%s
+  OO_BUILD_CMD               Command to build go from source, default: ./make.bash
+  OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version, 
+                             default: the latest installed version
+
+Version: ${VERSION}
 EOF
     exit 0
 }
+
+# https://gist.github.com/livibetter/1861384
+source "vercmp.sh"
 
 show_version() {
     echo ${VERSION}
@@ -112,6 +131,9 @@ handle_get_sigtstp() {
     exit 1
 }
 
+#
+# Get new version installed
+#
 get() {
     test -z $1 && show_help
     version=$1
@@ -126,13 +148,82 @@ get() {
     curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
 
     if [ ${?} != 0 ]; then
-        rm -rf ${target_dir} && abort 'bad version'
+        rm -rf ${target_dir} && abort 'fetch souce failed, maybe bad version'
     fi
 
-    printf 'build %s..\n' $(cat ${target_dir}/VERSION)
-    cd ${target_dir}/src && ${BUILD_CMD} &> /dev/null || abort 'build failed'
-
+    build ${version}
     use ${version}
+}
+
+
+#
+# Build go
+#
+build() {
+    if [ -z $1 ]; then
+        version=$(cat ${GOROOT_DIR}/VERSION)
+    else
+        version=$1
+    fi
+
+    target_dir=${VERSIONS_DIR}/${version}
+    test ! -d $target_dir && abort 'not installed'
+
+    printf 'build %s..\n' $(cat ${target_dir}/VERSION)
+
+    # go1.5 requires go>=1.4 as build tool (no more gcc)
+    vercmp ${version} '1.5'
+    ret=$?
+
+    if [ "${ret}" == 0 ] || [ "${ret}" == 1 ] ; then
+        if [ -z "${BOOTSTRAP_VERSION}" ]; then
+            bootstrap_version=0
+            for d in $(ls -d ${VERSIONS_DIR}/* | xargs -n 1 basename); do
+                vercmp ${d} ${bootstrap_version}
+                if [ "${?}" == 1 ] && [ "${d}" != "${version}" ]; then
+                    bootstrap_version=${d}
+                fi
+            done
+        else
+            bootstrap_version=${BOOTSTRAP_VERSION}
+        fi
+
+        vercmp ${bootstrap_version} '1.4'
+        if [ "${?}" == 2 ]; then
+            abort 'bootstrap go required to be >= 1.4'
+        fi
+
+        test ! -d ${VERSIONS_DIR}/${bootstrap_version} && abort "bootstrap version not installed"
+
+        printf "using go%s to bootstrap go%s..\n" ${bootstrap_version} ${version}..
+        export GOROOT_BOOTSTRAP=${VERSIONS_DIR}/${bootstrap_version}
+    fi
+
+    cd ${target_dir}/src && ${BUILD_CMD} &> /dev/null || abort 'build failed'
+    printf "build successfully\n"
+}
+
+
+#
+# Show go dir
+#
+dir() {
+    if [ -z $1 ]; then
+        printf ${GOROOT_DIR}
+    else
+        printf ${VERSIONS_DIR}/$1
+    fi
+}
+
+#
+# Show go bin
+#
+bin() {
+    if [ -z $1 ]; then
+        printf ${GOROOT_DIR}/bin/go
+    else
+        printf ${VERSIONS_DIR}/$1/bin/go
+    fi
 }
 
 #
@@ -148,6 +239,9 @@ else
         get) get $2 ;;
         rm) remove $2 ;;
         use) use $2 ;;
+        dir) dir $2;;
+        bin) bin $2;;
+        build) build $2;;
         *) use $1 ;;
     esac
 fi
