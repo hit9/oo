@@ -1,7 +1,5 @@
 #!/bin/bash
 
-VERSION='0.0.4'
-
 #
 # Settings
 #
@@ -19,6 +17,8 @@ ROOT_DIR=$(cd -P -- "$(dirname -- "${BASH_SOURCE:-$_}")/.." && pwd -P)
 VERSIONS_DIR=${ROOT_DIR}/versions
 GOROOT_DIR=${ROOT_DIR}/go
 GOBIN_PATH=${GOROOT_DIR}/bin/go
+
+VERSION=$(cat ${ROOT_DIR}/VERSION)
 
 #
 # Help
@@ -39,6 +39,7 @@ Commands:
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
   oo env                     Output current go env
+  oo upgrade                 Upgrade oo to latest version
 
 Options:
   -v, --version              Output oo's version
@@ -250,6 +251,15 @@ env() {
 }
 
 #
+# Upgrade oo
+#
+upgrade() {
+    command -v git > /dev/null 2>&1 || abort 'git not installed'
+    cd ${ROOT_DIR} && git pull git://github.com/hit9/oo.git master
+    printf '=> %s\n' $(cat ${ROOT_DIR}/VERSION)
+}
+
+#
 # Main
 #
 if test $# -eq 0; then
@@ -267,6 +277,7 @@ else
         bin) bin $2 ;;
         build) build $2 ;;
         env) env ;;
+        upgrade) upgrade ;;
         *) use $1 ;;
     esac
 fi

@@ -93,6 +93,7 @@ Commands:
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
   oo env                     Output current go env
+  oo upgrade                 Upgrade oo to latest version
 
 Options:
   -v, --version              Output oo's version
