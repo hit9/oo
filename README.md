@@ -1,7 +1,7 @@
 OO - Go Version Manager
 ------------------------
 
-Latest version: 0.0.2
+Latest version: 0.0.4
 
 ![](screen.gif)
 
