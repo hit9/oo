@@ -15,6 +15,13 @@ Install
    source "/path/to/oo/env"
    ```
 
+Note that you need to set `GOPATH` manually in your bashrc or zshrc:
+
+```bash
+export GOPATH=/path/to/your/gopath
+export PATH=$PATH:$GOPATH/bin
+```
+
 Examples
 ---------
 
