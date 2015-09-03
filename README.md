@@ -92,6 +92,7 @@ Commands:
   oo dir [<version>]         Show go directory by version
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
+  oo env                     Output current go env
 
 Options:
   -v, --version              Output oo's version

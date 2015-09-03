@@ -18,6 +18,7 @@ fi
 ROOT_DIR=$(cd -P -- "$(dirname -- "${BASH_SOURCE:-$_}")/.." && pwd -P)
 VERSIONS_DIR=${ROOT_DIR}/versions
 GOROOT_DIR=${ROOT_DIR}/go
+GOBIN_PATH=${GOROOT_DIR}/bin/go
 
 #
 # Help
@@ -37,6 +38,7 @@ Commands:
   oo dir [<version>]         Show go directory by version
   oo bin [<version>]         Show go binary path by version
   oo build [<version>]       Build go by version
+  oo env                     Output current go env
 
 Options:
   -v, --version              Output oo's version
@@ -70,7 +72,7 @@ abort() {
 # Show current version
 #
 current() {
-    test -f ${GOROOT_DIR}/VERSION || abort 'go?'
+    test -f ${GOROOT_DIR}/VERSION || abort 'go? (no version installed)'
     printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
 }
 
@@ -241,6 +243,13 @@ as() {
 }
 
 #
+# Show current go env
+#
+env() {
+    exec "${GOBIN_PATH}" env
+}
+
+#
 # Main
 #
 if test $# -eq 0; then
@@ -252,11 +261,12 @@ else
         ls) list ;;
         get) get $2 ;;
         rm) remove $2 ;;
-        as) as ${@:2};;
+        as) as ${@:2} ;;
         use) use $2 ;;
-        dir) dir $2;;
-        bin) bin $2;;
-        build) build $2;;
+        dir) dir $2 ;;
+        bin) bin $2 ;;
+        build) build $2 ;;
+        env) env ;;
         *) use $1 ;;
     esac
 fi
