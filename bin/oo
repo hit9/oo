@@ -37,7 +37,7 @@ Commands:
   oo as <version>            Run go from oo on a specific version
   oo dir [<version>]         Show go directory by version
   oo bin [<version>]         Show go binary path by version
-  oo build [<version>]       Build go by version
+  oo build <version>         Build go by version
   oo env                     Output current go env
   oo upgrade                 Upgrade oo to latest version
 
@@ -73,8 +73,11 @@ abort() {
 # Show current version
 #
 current() {
-    test -f ${GOROOT_DIR}/VERSION || abort 'go? (no version installed)'
-    printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
+    if [ -f ${GOROOT_DIR}/VERSION ]; then
+        printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
+    else
+        echo $(go version) || abort 'go? (no version installed)'
+    fi
 }
 
 #
@@ -100,7 +103,7 @@ use() {
     test -f ${GOROOT_DIR} && rm ${GOROOT_DIR}
     test -d ${GOROOT_DIR} && rm -r ${GOROOT_DIR}
     ln -fs ${target_dir} ${GOROOT_DIR}
-    printf '=> %s\n' $(cat ${GOROOT_DIR}/VERSION)
+    printf '=> ' && echo $(current)
 }
 
 #
@@ -165,7 +168,7 @@ get() {
 #
 build() {
     if [ -z $1 ]; then
-        version=$(cat ${GOROOT_DIR}/VERSION)
+        abort 'require argument version'
     else
         version=$1
     fi
@@ -173,7 +176,7 @@ build() {
     target_dir=${VERSIONS_DIR}/${version}
     test ! -d $target_dir && abort 'not installed'
 
-    printf 'build %s..\n' $(cat ${target_dir}/VERSION)
+    printf 'build %s..\n' ${version}
 
     # go1.5 requires go>=1.4 as build tool (no more gcc)
     vercmp ${version} '1.5'
