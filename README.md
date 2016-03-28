@@ -3,6 +3,8 @@ OO - Go Version Manager
 
 Latest version: 0.0.5
 
+`oo` was heavily inspired by [tj/n](https://github.com/tj/n).
+
 ![](screen.gif)
 
 Install
@@ -119,7 +121,13 @@ get https://storage.googleapis.com/golang/go1.4.src.tar.gz..
 ##########                                                                14.4%
 ```
 
+Similar Projects
+----------------
+
+- [tj/n - Node version management](https://github.com/tj/n)
+- [qw3rtman/p - Python Version Management Made Simple](https://github.com/qw3rtman/p)()
+
 License
 --------
 
-BSD.
+MIT.
