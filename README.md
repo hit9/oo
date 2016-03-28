@@ -125,7 +125,7 @@ Similar Projects
 ----------------
 
 - [tj/n - Node version management](https://github.com/tj/n)
-- [qw3rtman/p - Python Version Management Made Simple](https://github.com/qw3rtman/p)()
+- [qw3rtman/p - Python Version Management Made Simple](https://github.com/qw3rtman/p)
 
 License
 --------
