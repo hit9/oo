@@ -127,6 +127,14 @@ Similar Projects
 - [tj/n - Node version management](https://github.com/tj/n)
 - [qw3rtman/p - Python Version Management Made Simple](https://github.com/qw3rtman/p)
 
+FAQ
+---
+
+We can't bootstrap Go 1.N on macOS Sierra from source, ref: https://github.com/golang/go/issues/16352.
+
+Please download built go1.\*.\*darwin-amd64.tar.gz (1.7+) from https://golang.org/dl/, and use it to 
+bootstrap go source instead `oo/versions`.
+
 License
 --------
 
