@@ -127,15 +127,19 @@ Similar Projects
 - [tj/n - Node version management](https://github.com/tj/n)
 - [qw3rtman/p - Python Version Management Made Simple](https://github.com/qw3rtman/p)
 
-FAQ
----
+Troubles
+--------
 
-We can't bootstrap Go 1.N on macOS Sierra from source, ref: https://github.com/golang/go/issues/16352.
+Build golang from source may fail in many different reasons (such as bootstrap failures),
+please download latest binary archive tarball from golang.org once any trouble
+occurrs during build, and use that binary to bootstrap your golang source
+inside oo directory manually, then oo is ready to use again.
 
-Please download built go1.\*.\*darwin-amd64.tar.gz (1.7+) from https://golang.org/dl/, and use it to 
-bootstrap go source instead `oo/versions`.
+```
+cd path/to/oo/versions/x.x.x/src
+GOROOT_BOOTSTRAP=path/to/downloaded/go ./all.bash
+```
 
 License
 --------
-
 MIT.
