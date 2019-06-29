@@ -1,5 +1,16 @@
 #!/bin/bash
 
+#   ____  ____
+#  / __ \/ __ \
+# / /_/ / /_/ /
+# \____/\____/
+#
+# Simple Go Version Manager.
+#
+# https://github.com/hit9/oo
+#
+# Chao Wang, hit9@icloud.com
+
 #
 # Settings
 #
@@ -49,7 +60,7 @@ Environment Variables:
   OO_MIRROR_PATTERN          Mirror url pattern to download go source tarball
                              default: https://codeload.github.com/golang/go/tar.gz/go%s
   OO_BUILD_CMD               Command to build go from source, default: ./make.bash
-  OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version, 
+  OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version,
                              default: the latest installed version
 
 Version: ${VERSION}
