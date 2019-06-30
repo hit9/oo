@@ -95,10 +95,16 @@ current() {
 # List all versions installed
 #
 list() {
+    current_version=$(cat ${GOROOT_DIR}/VERSION)
     for file in ${VERSIONS_DIR}/*
     do
         if [ -d ${file} ]; then
-            basename ${file}
+            version_listing=$(basename ${file})
+            if [ ${current_version} = $(printf "go%s" ${version_listing}) ]; then
+                printf "=> %s\n" ${version_listing}
+            else
+                printf "   %s\n" ${version_listing}
+            fi
         fi
     done
 }
