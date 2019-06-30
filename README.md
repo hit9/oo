@@ -27,25 +27,32 @@ export PATH=$PATH:$GOPATH/bin
 Examples
 ---------
 
-Get go1.4 installed:
+Get go1.12.6 installed:
 
 ```bash
-$ oo get 1.4
+$ oo get 1.12.6
 ```
 
-Use go1.4 as current `go` (or just `oo 1.4`):
+Then, the `go1.12.6` is ready:
 
 ```bash
-$ oo use 1.4
-=> go1.4
+$ go version
+go version go1.12.6 darwin/amd64
 ```
 
-Run go from 1.3 temporary:
+Use go1.12.6 as current `go` (or just `oo 1.12.6`):
 
 ```bash
-$ oo as 1.3 version
-go version go1.3 darwin/amd64
-$ oo as 1.3 run helloworld.go
+$ oo use 1.12.6
+=> go1.12.6
+```
+
+Run go from 1.12.6 temporary:
+
+```bash
+$ oo as 1.12.6 version
+go version go1.12.6 darwin/amd64
+$ oo as 1.12.6 run helloworld.go
 Hello world!
 ```
 
@@ -53,13 +60,15 @@ List all installed go versions
 
 ```bash
 $ oo ls
+   1.12.5
+=> 1.12.6
 ```
 
 Build (or rebuild) go by version:
 
 ```bash
-$ oo build 1.4
-build go1.4..
+$ oo build 1.12.6
+build go1.12.6..
 build successfully
 ```
 
@@ -73,8 +82,8 @@ $ oo bin
 Remove a version:
 
 ```bash
-$ oo rm 1.5rc1                                                                                                                                                                          1 ↵ (go1.4 node@v2.0.0) ~/github/oo/versions/1.5/src
-go@1.5rc1 removed
+$ oo rm 1.12.5                                                                                                                                                                          1 ↵ (go1.4 node@v2.0.0) ~/github/oo/versions/1.5/src
+go@1.12.5 removed
 ```
 
 Usage
@@ -116,8 +125,8 @@ Custom Mirror
 
 ```bash
 $ export OO_MIRROR_PATTERN='https://storage.googleapis.com/golang/go%s.src.tar.gz'
-$ oo get 1.4
-get https://storage.googleapis.com/golang/go1.4.src.tar.gz..
+$ oo get 1.12.6
+get https://storage.googleapis.com/golang/go1.12.6.src.tar.gz..
 ##########                                                                14.4%
 ```
 
