@@ -21,6 +21,8 @@ if [ ! -z "${OO_BOOTSTRAP_VERSION}" ]; then
     BOOTSTRAP_VERSION=${OO_BOOTSTRAP_VERSION}
 fi
 
+PREBUILT_PKG_URL_PATTERN='https://dl.google.com/go/go%s.%s-amd64.tar.gz'
+
 #
 # Global Vars
 #
@@ -87,7 +89,7 @@ current() {
     if [ -f ${GOROOT_DIR}/VERSION ]; then
         printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
     else
-        echo $(go version) || abort 'go? (no version installed)'
+        abort 'go? (no version installed)'
     fi
 }
 
@@ -95,6 +97,8 @@ current() {
 # List all versions installed
 #
 list() {
+    test ! -f ${GOROOT_DIR}/VERSION && abort 'no version installed'
+
     current_version=$(cat ${GOROOT_DIR}/VERSION)
     for file in ${VERSIONS_DIR}/*
     do
@@ -161,10 +165,32 @@ handle_get_sigtstp() {
 get() {
     test -z $1 && show_help
     version=$1
-    tarball_url=$(printf ${MIRROR_PATTERN} ${version})
+
     target_dir=${VERSIONS_DIR}/${version}
     test -d ${target_dir} && abort 'already installed'
     command -v curl > /dev/null || abort 'curl is required'
+
+    use_prebuilt=false
+    test -z $2 || use_prebuilt=true
+    if [ ! -d "${VERSIONS_DIR}" ] || [ -z "$(ls -A ${VERSIONS_DIR})" ]; then
+        printf 'no existing go versions installed, using prebuilt package\n'
+        use_prebuilt=true
+    fi
+
+    if [ "$use_prebuilt" = false ]; then
+        tarball_url=$(printf ${MIRROR_PATTERN} ${version})
+    else
+        if [[ "$OSTYPE" == "linux-gnu" ]]; then
+            printf 'linux detected\n'
+            tarball_url=$(printf ${PREBUILT_PKG_URL_PATTERN} ${version} 'linux')
+        elif [[ "$OSTYPE" == "darwin"* ]]; then
+            printf 'darwin/osx detected\n'
+            tarball_url=$(printf ${PREBUILT_PKG_URL_PATTERN} ${version} 'darwin')
+        else
+            abort 'unsupported os'
+        fi
+    fi
+
     test -d ${target_dir} || mkdir -p ${target_dir}
     trap 'handle_get_sigint ${version}' INT
     trap 'handle_get_sigtstp ${version}' SIGTSTP
@@ -172,10 +198,12 @@ get() {
     curl -# -L ${tarball_url} | tar xz -C ${target_dir} --strip 1 &> /dev/null
 
     if [ ${?} != 0 ]; then
-        rm -rf ${target_dir} && abort 'fetch souce failed, maybe bad version'
+        rm -rf ${target_dir} && abort 'fetch tarball failed, maybe bad version'
     fi
 
-    build ${version}
+    if [ "$use_prebuilt" = false ]; then
+        build ${version}
+    fi
     use ${version}
 }
 
@@ -289,7 +317,7 @@ else
         -v|--version) show_version ;;
         -h|--help|help) show_help ;;
         ls) list ;;
-        get) get $2 ;;
+        get) get $2 $3;;
         rm) remove $2 ;;
         as) as ${@:2} ;;
         use) use $2 ;;

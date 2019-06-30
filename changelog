@@ -1,0 +1,11 @@
+v0.0.7
+------
+
+* Add option `--use-prebuilt` for command `oo get`, default to `false`.
+* Downloads a prebuilt package from golang.org/dl for the first installation via `oo get`.
+* Fix issues in `oo ls` and `oo` when no version installed.
+
+v0.0.6
+------
+
+* Display a prefix `=>` for activated version in command `oo ls`.

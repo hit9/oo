@@ -1,11 +1,24 @@
 OO - Go Version Manager
 ------------------------
 
-Latest version: 0.0.6
+Latest version: 0.0.7
 
 `oo` was heavily inspired by [tj/n](https://github.com/tj/n).
 
 ![](screen.gif)
+
+Requirements
+------------
+
+Supported system:
+
+* Mac OSX
+* Linux
+
+Requirements:
+
+* Bash
+* Curl
 
 Install
 -------
@@ -86,6 +99,30 @@ $ oo rm 1.12.5                                                                  
 go@1.12.5 removed
 ```
 
+Using Prebuilt
+--------------
+
+By default, oo prefers to bootstrap a new version via an existing installed version:
+
+```bash
+$ oo get 1.12.6
+get https://codeload.github.com/golang/go/tar.gz/go1.12.6..
+######################################################################## 100.0%
+using go1.12.5 to bootstrap go1.12.6....
+build successfully
+=> go1.12.6
+```
+
+But we are still able to download a prebuilt packages directly from https://golang.org/dl/
+without a build waiting:
+
+```bash
+$ oo get 1.10.3 --use-prebuilt
+get https://dl.google.com/go/go1.10.3.darwin-amd64.tar.gz..
+######################################################################## 100.0%
+=> go1.10.3
+```
+
 Usage
 -----
 
@@ -117,7 +154,7 @@ Environment Variables:
   OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version,
                              default: the latest installed version
 
-Version: 0.0.4
+Version: 0.0.7
 ```
 
 Custom Mirror
@@ -139,10 +176,8 @@ Similar Projects
 Troubles
 --------
 
-Build golang from source may fail in many different reasons (such as bootstrap failures),
-please download latest binary archive tarball from golang.org once any trouble
-occurrs during build, and use that binary to bootstrap your golang source
-inside oo directory manually, then oo is ready to use again.
+If there are any errors during the bootstrap building, it's helpful to build manually to check
+what errors occurred:
 
 ```
 cd path/to/oo/versions/x.x.x/src
