@@ -21,7 +21,7 @@ if [ ! -z "${OO_BOOTSTRAP_VERSION}" ]; then
     BOOTSTRAP_VERSION=${OO_BOOTSTRAP_VERSION}
 fi
 
-PREBUILT_PKG_URL_PATTERN='https://dl.google.com/go/go%s.%s-amd64.tar.gz'
+PREBUILT_PKG_URL_PATTERN=${PREBUILT_PKG_URL_PATTERN-https://dl.google.com/go/go%s.%s-amd64.tar.gz}
 
 #
 # Global Vars
@@ -64,6 +64,11 @@ Environment Variables:
   OO_BUILD_CMD               Command to build go from source, default: ./make.bash
   OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version,
                              default: the latest installed version
+
+  PREBUILT_PKG_URL_PATTERN   Url pattern to download pre-built go package
+                             default: https://dl.google.com/go/go%s.%s-amd64.tar.gz
+                             The first parameter here is version, the second is platform.
+                             Use https://dl.google.com/go/go%s.%s-arm64.tar.gz for arm64 platforms (e.g. Mac M1).
 
 Version: ${VERSION}
 EOF
