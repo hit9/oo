@@ -1,7 +1,7 @@
 OO - Go Version Manager
 ------------------------
 
-Latest version: 0.0.8
+Latest version: 0.0.9
 
 `oo` was heavily inspired by [tj/n](https://github.com/tj/n).
 
@@ -24,13 +24,25 @@ Install
 -------
 
 1. Clone this repo.
+
+   ```bash
+   git clone https://github.com/hit9/oo.git $HOME/.oo
+   ```
+
 2. Add this to your bashrc or zshrc:
 
    ```bash
-   source "/path/to/oo/env"
+   source $HOME/.oo/env
    ```
 
-Note that you need to set `GOPATH` manually in your bashrc or zshrc:
+   Or this if you are using fish shell:
+
+   ```fish
+   source $HOME/.oo/env.fish
+   ```
+
+Note that you still need to set `GOPATH` manually in your bashrc or zshrc,
+oo dosen't take care of that:
 
 ```bash
 export GOPATH=/path/to/your/gopath
