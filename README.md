@@ -99,6 +99,9 @@ $ oo rm 1.12.5                                                                  
 go@1.12.5 removed
 ```
 
+You may need to [download a prebuilt golang](#using-prebuilt) on the first run,
+if there's no golang installed, bootstrap won't work.
+
 Using Prebuilt
 --------------
 
@@ -154,11 +157,17 @@ Environment Variables:
   OO_BOOTSTRAP_VERSION       Bootstrap go version to compile the target version,
                              default: the latest installed version
 
+  PREBUILT_PKG_URL_PATTERN   Url pattern to download pre-built go package
+                             default: https://dl.google.com/go/go%s.%s-amd64.tar.gz
+                             The first parameter here is version, the second is platform.
+                             Use https://dl.google.com/go/go%s.%s-arm64.tar.gz for arm64 platforms (e.g. Mac M1).
 Version: 0.0.7
 ```
 
 Custom Mirror
 -------------
+
+To use custom mirror url to download golang source:
 
 ```bash
 $ export OO_MIRROR_PATTERN='https://storage.googleapis.com/golang/go%s.src.tar.gz'
@@ -166,6 +175,18 @@ $ oo get 1.12.6
 get https://storage.googleapis.com/golang/go1.12.6.src.tar.gz..
 ##########                                                                14.4%
 ```
+
+To use custom mirror url to download prebuilt golang package:
+
+```bash
+$ export PREBUILT_PKG_URL_PATTERN=https://dl.google.com/go/go%s.%s-arm64.tar.gz
+$ oo get 1.16.3 --use-prebuilt
+get https://dl.google.com/go/go1.16.3.darwin-arm64.tar.gz..
+########################################################################################################################################################################################################################## 100.0%
+=> go1.16.3
+```
+
+You can add these environment variables to your bashrc or zshrc etc. for convenience.
 
 Similar Projects
 ----------------
