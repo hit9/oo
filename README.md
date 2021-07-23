@@ -42,7 +42,7 @@ Install
    ```
 
 Note that you still need to set `GOPATH` manually in your bashrc or zshrc,
-oo dosen't take care of that:
+oo doesn't take care of that:
 
 ```bash
 export GOPATH=/path/to/your/gopath
