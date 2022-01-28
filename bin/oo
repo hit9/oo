@@ -41,18 +41,18 @@ show_help() {
 Usage: oo [COMMAND]
 
 Commands:
-  oo                         Output current go version
-  oo ls                      Output versions installed
-  oo <version>               Use go <version>
-  oo use <version>           Use go <version>
-  oo get <version>           Get go <version>
-  oo rm <version>            Remove the given version
-  oo as <version>            Run go from oo on a specific version
-  oo dir [<version>]         Show go directory by version
-  oo bin [<version>]         Show go binary path by version
-  oo build <version>         Build go by version
-  oo env                     Output current go env
-  oo upgrade                 Upgrade oo to latest version
+  oo                                Output current go version
+  oo ls                             Output versions installed
+  oo <version>                      Use go <version>
+  oo use <version>                  Use go <version>
+  oo get <version> [--use_prebuilt] Get go <version>
+  oo rm <version>                   Remove the given version
+  oo as <version>                   Run go from oo on a specific version
+  oo dir [<version>]                Show go directory by version
+  oo bin [<version>]                Show go binary path by version
+  oo build <version>                Build go by version
+  oo env                            Output current go env
+  oo upgrade                        Upgrade oo to latest version
 
 Options:
   -v, --version              Output oo's version
@@ -109,7 +109,7 @@ list() {
     do
         if [ -d ${file} ]; then
             version_listing=$(basename ${file})
-            if [ ${current_version} = $(printf "go%s" ${version_listing}) ]; then
+            if [ ${current_version} = $(printf "go%s" "${version_listing}") ]; then
                 printf "=> %s\n" ${version_listing}
             else
                 printf "   %s\n" ${version_listing}
@@ -123,7 +123,8 @@ list() {
 #
 use() {
     test -z $1 && show_help
-    target_dir=${VERSIONS_DIR}/$1
+    version=$1
+    target_dir=${VERSIONS_DIR}/${version}
     test -d ${target_dir} || abort 'not installed'
     # create soft link
     test -f ${GOROOT_DIR} && rm ${GOROOT_DIR}
@@ -204,6 +205,12 @@ get() {
 
     if [ ${?} != 0 ]; then
         rm -rf ${target_dir} && abort 'fetch tarball failed, maybe bad version'
+    fi
+
+    # The go/VERSION file is missing in version go1.18beta1 (download from github). let's create.
+    if [ ! -f ${target_dir}/VERSION ]; then
+        printf 'file go/VERSION not found, creating..\n'
+        printf 'go%s' "${version}" | xargs > ${target_dir}/VERSION
     fi
 
     if [ "$use_prebuilt" = false ]; then
