@@ -1,7 +1,7 @@
 OO - Go Version Manager
 ------------------------
 
-Latest version: 0.0.9
+Latest version: 0.1.0
 
 `oo` was heavily inspired by [tj/n](https://github.com/tj/n).
 
