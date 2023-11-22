@@ -92,7 +92,7 @@ abort() {
 #
 current() {
     if [ -f ${GOROOT_DIR}/VERSION ]; then
-        printf '%s\n' $(cat ${GOROOT_DIR}/VERSION)
+        printf '%s\n' $(head -1 ${GOROOT_DIR}/VERSION)
     else
         abort 'go? (no version installed)'
     fi
@@ -104,7 +104,7 @@ current() {
 list() {
     test ! -f ${GOROOT_DIR}/VERSION && abort 'no version installed'
 
-    current_version=$(cat ${GOROOT_DIR}/VERSION)
+    current_version=$(head -1 ${GOROOT_DIR}/VERSION)
     for file in ${VERSIONS_DIR}/*
     do
         if [ -d ${file} ]; then
