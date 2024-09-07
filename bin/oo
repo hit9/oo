@@ -21,7 +21,7 @@ if [ ! -z "${OO_BOOTSTRAP_VERSION}" ]; then
     BOOTSTRAP_VERSION=${OO_BOOTSTRAP_VERSION}
 fi
 
-PREBUILT_PKG_URL_PATTERN=${PREBUILT_PKG_URL_PATTERN-https://dl.google.com/go/go%s.%s-amd64.tar.gz}
+PREBUILT_PKG_URL_PATTERN=${PREBUILT_PKG_URL_PATTERN-https://dl.google.com/go/go%s.%s-arm64.tar.gz}
 
 #
 # Global Vars
